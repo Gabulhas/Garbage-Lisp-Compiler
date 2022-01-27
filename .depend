@@ -1,0 +1,20 @@
+ast.cmi :
+lexer.cmo : \
+    parser.cmi
+lexer.cmx : \
+    parser.cmx
+main.cmo :
+main.cmx :
+parser.cmo : \
+    ast.cmi \
+    parser.cmi
+parser.cmx : \
+    ast.cmi \
+    parser.cmi
+parser.cmi : \
+    ast.cmi
+x86_64.cmo : \
+    x86_64.cmi
+x86_64.cmx : \
+    x86_64.cmi
+x86_64.cmi :

@@ -1,0 +1,10 @@
+(define functionA (lambda (a)
+
+    (a 4)
+))
+
+
+(define functionB (lambda (a) (print a)))
+
+
+(functionA functionB)

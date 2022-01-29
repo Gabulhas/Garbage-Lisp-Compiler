@@ -7,10 +7,6 @@
 (print (concat "hey" "hyo"))
 
 
-(define concatList (lambda (my_list)
-    (toString (++ (map toString my_list)))
-    )
-)
 
 
 (print "-----Concat list of strings-----")

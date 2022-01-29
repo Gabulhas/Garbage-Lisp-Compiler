@@ -5,6 +5,7 @@ type sexp =
   | Boolean of bool
   | Symbol of string
   | LString of string
+  | LChar of char
   | Number of number
   | Unit
 
@@ -12,16 +13,13 @@ type lisptypes =
   | TypeBoolean
   | TypeSymbol
   | TypeString
+  | TypeChar
   | TypeNumber
   | TypeUnit
-  | TypeList
-   (**Args types, return type *)
-  | TypeLambda of lisptypes list * lisptypes
-  | TypeUndefined 
   | ComplexType of lisptypes list
 
 type wrapsexp =
-  (**"define" *)
+  (* "define" *)
   | DEFINE of wrapsexp * wrapsexp
   (* "if" *)
   | IF of wrapsexp * wrapsexp * wrapsexp
@@ -128,5 +126,6 @@ type wrapsexp =
   | BOOLEAN of bool
   | SYMBOL of string
   | STRING of string
+  | CHAR of char
   | NUMBER of number
   | UNIT

@@ -1,10 +1,20 @@
 ast.cmi :
+codegeneration.cmo :
+codegeneration.cmx :
 lexer.cmo : \
     parser.cmi
 lexer.cmx : \
     parser.cmx
-main.cmo :
-main.cmx :
+main.cmo : \
+    typechecker.cmo \
+    sexpprepare.cmo \
+    parser.cmi \
+    lexer.cmo
+main.cmx : \
+    typechecker.cmx \
+    sexpprepare.cmx \
+    parser.cmx \
+    lexer.cmx
 parser.cmo : \
     ast.cmi \
     parser.cmi
@@ -12,6 +22,26 @@ parser.cmx : \
     ast.cmi \
     parser.cmi
 parser.cmi : \
+    ast.cmi
+sexpprepare.cmo : \
+    utils.cmo \
+    ast.cmi
+sexpprepare.cmx : \
+    utils.cmx \
+    ast.cmi
+temp_testing.cmo : \
+    main.cmo
+temp_testing.cmx : \
+    main.cmx
+typechecker.cmo : \
+    utils.cmo \
+    ast.cmi
+typechecker.cmx : \
+    utils.cmx \
+    ast.cmi
+utils.cmo : \
+    ast.cmi
+utils.cmx : \
     ast.cmi
 x86_64.cmo : \
     x86_64.cmi

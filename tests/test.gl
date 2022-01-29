@@ -1,3 +1,5 @@
+(> passos passos_minimos)
+(lambda (a b) (* a b))
 (define batata 4)
 
 (print batata)
@@ -7,11 +9,12 @@
 
 (define get_at_aux (lambda (char_list index current)
     (if (= 0 (len char_list))
-	-1
-	(if (= index current)
-	    (car char_list)
-	    (get_at_aux (cdr char_list) index (+ 1 current))
-	)
+    -1
+    (if (= index current)
+        (car char_list)
+        (get_at_aux (cdr char_list) index (+ 1 current))
+    )
     )
 
-))
+    )
+)

@@ -16,7 +16,7 @@ let digit = ['0' - '9']
 let intval = '-'? digit+
 let floatval = digit+ ['.'] digit+
 let letter = [ 'a'-'z' 'A' - 'Z']
-let specialchar  = ('+' |'-' |'/'|'%'|'<'|">="|"<="|'='|'?')+
+let specialchar  = ('+' |'-' |'/'|'%'|'>'|'<'|">="|"<="|'='|'?'|'*')+
 let ident = (letter | specialchar) ( letter | digit | '_' | '-')*
 let character = (digit | letter)
 let string = '"' [^'"']* '"'
@@ -38,9 +38,15 @@ rule lex =
       | "#f"            {FALSE}
       | "("             { LP }
       | ")"             { RP }
+      | ";"             { comment lexbuf; lex lexbuf }
+
 
       | [' ' '\t' '\n'] { lex lexbuf }
       | eof             { EOF }
 
       | _               {print_lex (Lexing.lexeme lexbuf); EOF}
+
+and comment =
+    parse '\n' {()}
+    | _       { comment lexbuf }
 

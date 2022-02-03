@@ -12,6 +12,7 @@ let rec type_to_string = function
   | TypeNumber -> "Number"
   | TypeUnit -> "Unit"
   | TypeList -> "List"
+  | TypeFunCall -> "Funcall"
   | TypeLambda (argtypes, returntype) ->
       let types =
         List.map type_to_string (argtypes @ [ returntype ])
@@ -47,37 +48,40 @@ let sexp_to_string s =
 
   aux 0 s
 
+let here_text = function Some a -> "Here: " ^ sexp_to_string a | None -> ""
+
 (* TODO: merge raise_parametermismatchnumber and raise_parametermismatchnumber_atleast
 
 
 *)
 
-let raise_parametermismatchnumber symbol expected got params =
+let raise_parametermismatchnumber symbol expected got ?(where = None) =
   raise
     (ParameterMismatchNumber
        (Printf.sprintf
-          "Function \"%s\" expected %d arguments, but got %d instead." symbol
-          expected got))
+          "Function \"%s\" expected %d arguments, but got %d instead. %s" symbol
+          expected got (here_text where)))
 
-let raise_parametermismatchnumber_atleast symbol expected got params =
+let raise_parametermismatchnumber_atleast symbol expected got ?(where = None) =
   raise
     (ParameterMismatchNumber
        (Printf.sprintf
-          "Function \"%s\" expected at least %d arguments, but got %d instead."
-          symbol expected got))
+          "Function \"%s\" expected at least %d arguments, but got %d instead. \
+           %s"
+          symbol expected got (here_text where)))
 
 let raise_notalist l =
   raise
     (NotAList (Printf.sprintf "Expression %s is not a list." (sexp_to_string l)))
 
-let raise_unexpectedtype expected got =
+let raise_unexpectedtype expected got ?(where = None) =
   raise
     (UnexpectedType
-       (Printf.sprintf "Expected %s but got %s." (type_to_string expected)
-          (type_to_string got)))
+       (Printf.sprintf "Expected %s but got %s. %s" (type_to_string expected)
+          (type_to_string got) (here_text where)))
 
-let raise_mismatchedtype a b =
+let raise_mismatchedtype a b ?(where = None) =
   raise
     (UnexpectedType
-       (Printf.sprintf "Type Mismatch: %s =/= %s." (type_to_string a)
-          (type_to_string b)))
+       (Printf.sprintf "Type Mismatch: %s =/= %s. %s" (type_to_string a)
+          (type_to_string b) (here_text where)))

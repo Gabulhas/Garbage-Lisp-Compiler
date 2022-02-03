@@ -32,7 +32,6 @@ rule lex =
     parse intval        { INTVAL  (int_of_string   (Lexing.lexeme lexbuf))  }
       | floatval        { FLOATVAL(float_of_string (Lexing.lexeme lexbuf))    }
       | string          { LSTRING (remove_quotes (Lexing.lexeme lexbuf))      }
-      | character       { LCHAR ( String.get (Lexing.lexeme lexbuf) 0)      }
       | ident           { IDE (Lexing.lexeme lexbuf)}
       | "#t"            {TRUE}
       | "#f"            {FALSE}

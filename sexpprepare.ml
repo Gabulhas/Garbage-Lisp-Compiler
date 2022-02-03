@@ -1,6 +1,6 @@
+open Utils
 open Ast
 open List
-open Utils
 
 let hdtl a = hd (tl a)
 
@@ -14,8 +14,9 @@ let rec wrap s =
   | Unit -> UNIT
   | Sexp (a, b) -> LIST (List.map wrap (a :: b))
 
-(*s - symbol
-  l - parameter list
+(*
+    s - symbol
+    l - parameter list
 *)
 and funcall s l =
   match s with
@@ -80,26 +81,17 @@ and funcall s l =
   | "++" ->
       let c = cep s 2 l in
       PLUSPLUS (hd c, hdtl c)
-  | "empty?" -> ISEMPTY (cep s 1 l |> hd)
-  | "list?" -> ISLIST (cep s 1 l |> hd)
-  | "procedure?" -> ISPROCEDURE (cep s 1 l |> hd)
-  | "symbol?" -> ISSYMBOL (cep s 1 l |> hd)
-  | "bool?" -> ISBOOL (cep s 1 l |> hd)
-  | "number?" -> ISNUMBER (cep s 1 l |> hd)
-  | "string?" -> ISSTRING (cep s 1 l |> hd)
-  | "equals?" -> ISEQUALS (cep s 1 l |> hd)
-  | "type?" -> ISTYPE (cep s 1 l |> hd)
   | "toCharList" -> TOCHARLIST (cep s 1 l |> hd)
   | "toString" -> TOSTRING (cep s 1 l |> hd)
   | _ as fnc -> FUNCTIONCALL (fnc, map wrap l)
 
-(*check expected params*)
+(**check expected params*)
 and cep symbol expected params =
   let l = List.length params in
   if l <> expected then raise_parametermismatchnumber symbol expected l params
   else List.map wrap params
 
-(*check at least expected params*)
+(**check at least expected params*)
 and cal symbol expected params =
   let l = List.length params in
   if l < expected then

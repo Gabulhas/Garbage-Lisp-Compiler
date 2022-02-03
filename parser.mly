@@ -12,7 +12,6 @@ let program_wrap sexplist =
 %token <int>        INTVAL
 %token <float>      FLOATVAL
 %token <string>     LSTRING
-%token <char>       LCHAR
 %token <string>     IDE
 %token              TRUE FALSE
 
@@ -21,7 +20,7 @@ let program_wrap sexplist =
 
 
 %start program
-%type <Ast.sexp> program
+%type <Ast.simpleexp> program
 %%
 
 program:

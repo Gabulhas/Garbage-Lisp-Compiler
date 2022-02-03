@@ -18,23 +18,21 @@ module ParameterMap = Map.Make (struct
 end)
 
 
-let check program = ""
+(**Maps Variables to infer to it's type*)
+type toInfer = (string, lisptype) Hashtbl.t
 
-let cmp_tp a b =
-  let rec aux x y =
-    match (x, y) with
-    | ComplexType c, ComplexType d -> List.equal aux c d
-    | ComplexType c, _ -> false
-    | _, ComplexType d -> false
-    | _, _ -> x = y
-  in
-  aux a b 
+
+type variableEnv = string VariableMap.t
+type parameterEnv = string ParameterMap.t
+
+
+type scopeenv = {scopetype:lisptype; toinfer:toInfer; venv:variableEnv; penv:parameterEnv}
 
 (*expect type*)
 let wrapperchecktype a b excptn =
-    if cmp_tp a b then a
+    if a == b then a
     else
-        if b = TypeUndefined then
+        if b == TypeUndefined then
             a
         else
             excptn a b |> raise
@@ -47,7 +45,7 @@ let doesmatch a b =
 
 (*Type*VM*PM*)
 (** Accepts sexpression, variable map, parameter map.*)
-let rec check_exp sexp vm pm=
+let rec check_exp sexp (sv:scopeenv)=
 
     (** Util function to avoid repetition*)
     let rec chk a = check_exp a vm pm 
@@ -222,20 +220,6 @@ let rec check_exp sexp vm pm=
           chk f |> ignore;
           chk l |> ignore;
           (TypeList, vm, pm)
-  
-
-  (*TODO: Might be removed, since its a type lisp*)
-  | ISEMPTY e
-  | ISLIST e
-  | ISPROCEDURE e
-  | ISSYMBOL e
-  | ISBOOL e
-  | ISNUMBER e
-  | ISSTRING e
-  | ISEQUALS e
-  | ISTYPE e ->
-          chk e |> ignore;
-          (TypeBoolean, vm, pm)
 
   | TOCHARLIST s -> 
       expctype TypeString (gettypeonly chk s) |> ignore;

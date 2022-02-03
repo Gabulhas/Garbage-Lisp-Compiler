@@ -1,6 +1,7 @@
 # To Fix 
 - List should have a type
-
+- Add type for quotes
+- Fix optional arguments
 
 
 # Functions to implement

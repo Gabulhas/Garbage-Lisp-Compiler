@@ -138,7 +138,7 @@ and funcall se s l : wrapsexp * ScopeEnv.t =
           in
           let (body_exp, body_env) = wrap se (List.nth l 1) in
           let infered_types = List.map (fun x -> VariableMap.find x body_env.toinfer) arg_list in
-            (LAMBDA (body_exp, infered_types, body_env.scopetype), body_env)
+          (LAMBDA (body_exp, infered_types, body_env.scopetype), ScopeEnv.update_scopetype (TypeLambda(infered_types, body_env.scopetype)) se)
   | "map" ->
         let c = cargs 2 in
         let (lambda_exp, lambda_env), (list_exp, list_env) = (List.hd c, List.nth c 2) in
@@ -271,12 +271,46 @@ and funcall se s l : wrapsexp * ScopeEnv.t =
           )  
   | _ as fnc -> 
         (
-            let 
+            let func_type_opt = VariableMap.find_opt fnc se.venv in
+            if Option.is_some func_type_opt then
+                (
+                let func_type = Option.get func_type_opt in
+                let (arg_types, return_type) = (match func_type with | TypeLambda(a, b) -> (a,b) | _ -> raise_not_a_function ~where:(Some(real_func)) fnc func_type) in
+                let (args_len, arg_types_len ) = (List.length l , List.length arg_types) in
+                if (args_len != arg_types_len) then 
+                    raise_parametermismatchnumber fnc arg_types_len args_len ~where:(Some(real_func)) 
+                (*TODO: Infer types of arguments*)
+                else
+                    let rec wrap_funcall arg_types args result_exps current_se =
+                    (
+                    match arg_types, args with
+                    | a::tl, a2::tl2 -> 
+                            let (res_exp, res_env) = wrap (ScopeEnv.update_scopetype a current_se) a2 in
+                            let current_se = ScopeEnv.update_toinfer (merge_venv  current_se.toinfer res_env.toinfer) current_se in
+                            wrap_funcall tl tl2 (res_exp::result_exps) current_se
+                    | _,_ -> (List.rev result_exps, current_se)
+                    )
+                    in
+                    let (exps, new_env) = wrap_funcall arg_types l [] se in
 
-            let infered_types = 
-                match VariableMap.find_opt fnc se.toinfer with
-                | Some a ->
-                | _ -> se.toinfer 
+                    (FUNCTIONCALL(fnc, exps), ScopeEnv.update_scopetype return_type new_env)
+                )
+            (*When the lambda function wasn't defined yet, so, when it's passed as a argument, like
+
+            (define funcA (lambda (my_func) 
+                    (my_func 4 2 1)
+                )
+            )
+            Here ^, we have to infer the type of my_func's call, this being TypeNumber, TypeNumber, TypeNumber
+
+
+            TODO: find way to infer return type
+             *)
+            else
+                let infered_types = 
+                    match VariableMap.find_opt fnc se.toinfer with
+                    | Some a ->
+                    | _ -> se.toinfer 
 
         )
           (*Ver se está na venv, ou se está na infer*)

@@ -4,6 +4,8 @@ exception ParameterMismatchNumber of string
 exception NotAList of string
 exception UnexpectedType of string
 exception MismatchedType of string
+exception MismatchedArgumentTypes of string
+exception NotAFunction of string
 
 let rec type_to_string = function
   | TypeBoolean -> "Boolean"
@@ -85,3 +87,18 @@ let raise_mismatchedtype a b ?(where = None) =
     (UnexpectedType
        (Printf.sprintf "Type Mismatch: %s =/= %s. %s" (type_to_string a)
           (type_to_string b) (here_text where)))
+
+let raise_not_a_function symb current_type ?(where = None) =
+  raise
+    (UnexpectedType
+       (Printf.sprintf "%s is not a Lambda/Function, it's Type %s. %s" symb
+          (type_to_string current_type)
+          (here_text where)))
+
+let raise_mismatched_argument_types symb real_args wrong_args ?(where = None) =
+  let real_args_str = ComplexType real_args |> type_to_string in
+  let wrong_args_str = ComplexType wrong_args |> type_to_string in
+  raise
+    (MismatchedArgumentTypes
+       (Printf.sprintf "Mismatched argument types when calling %s: %s =/=%s. %s"
+          symb real_args_str wrong_args_str (here_text where)))

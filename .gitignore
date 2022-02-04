@@ -29,3 +29,8 @@ setup.log
 _opam/
 
 parser.automaton
+
+parser.mli
+parser.ml
+parser.conflicts
+lexer.ml

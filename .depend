@@ -6,13 +6,11 @@ lexer.cmo : \
 lexer.cmx : \
     parser.cmx
 main.cmo : \
-    typechecker.cmo \
-    sexpprepare.cmo \
+    preparetyper.cmo \
     parser.cmi \
     lexer.cmo
 main.cmx : \
-    typechecker.cmx \
-    sexpprepare.cmx \
+    preparetyper.cmx \
     parser.cmx \
     lexer.cmx
 parser.cmo : \
@@ -23,8 +21,12 @@ parser.cmx : \
     parser.cmi
 parser.cmi : \
     ast.cmi
-preparetyper.cmo :
-preparetyper.cmx :
+preparetyper.cmo : \
+    utils.cmo \
+    ast.cmi
+preparetyper.cmx : \
+    utils.cmx \
+    ast.cmi
 sexpprepare.cmo : \
     utils.cmo \
     ast.cmi

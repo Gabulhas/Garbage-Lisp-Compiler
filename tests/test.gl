@@ -1,20 +1,39 @@
-(> passos passos_minimos)
+(> 1 4)
 (lambda (a b) (* a b))
-(define batata 4)
 
-(print batata)
-(print "batata")
+(define teste
+    (lambda (arg_1 arg_2 arg_3)
+        (if arg_1
+            (* arg_2 arg_2)
+            (begin
+               arg_3
+            )
+        )
 
-(print (+ 4 5))
+        )
+)
 
-(define get_at_aux (lambda (char_list index current)
-    (if (= 0 (len char_list))
-    -1
-    (if (= index current)
-        (car char_list)
-        (get_at_aux (cdr char_list) index (+ 1 current))
-    )
-    )
+(define cebola 
+    (if (> 4 5)
+        (lambda (a b) (* a b))
+        (lambda (a b) (/ a b))
 
     )
 )
+
+
+(lambda (a b)
+    (begin
+        (a (+ 4 5) 7)
+        (b #t 7)
+    )
+
+)
+
+
+(if (and (> (+ 4 5) (/ 4 5)) (= 4 4))
+    (inputNumber)
+    (+ 4 5)
+)
+
+

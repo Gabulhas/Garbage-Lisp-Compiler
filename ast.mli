@@ -25,7 +25,7 @@ type wrapsexp =
   (*If in Lisp (or at least Garbage Lisp) acts as a function*)
   | IF of wrapsexp * wrapsexp * wrapsexp * lisptype
   (*Parameters Type and Return Type*)
-  | LAMBDA of wrapsexp * lisptype list * lisptype
+  | LAMBDA of string list * wrapsexp * lisptype list * lisptype
   | MAP of wrapsexp * wrapsexp
   | ALL of wrapsexp list
   | QUOTE of wrapsexp

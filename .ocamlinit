@@ -1,9 +1,8 @@
-
 #load "lexer.cmo";;
 #load "parser.cmo";;
 #load "utils.cmo"
-#load "sexpprepare.cmo"
-#load "typechecker.cmo"
+#load "exceptions.cmo"
+#load "preparetyper.cmo"
 
 (*
 #load "typechecker.cmo";;
@@ -15,7 +14,7 @@ let pipeline filename =
   open_in filename
   |> Lexing.from_channel
   |> Parser.program Lexer.lex
-  |> Sexpprepare.prepare
+  |> Preparetyper.prepare
 ;;
 
 let stepped_pipeline filename =

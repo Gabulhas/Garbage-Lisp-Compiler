@@ -1,10 +1,27 @@
-ast.cmi :
+ast.cmo :
+ast.cmx :
 codegeneration.cmo :
 codegeneration.cmx :
+environments.cmo : \
+    lisptype.cmo \
+    exceptions.cmo \
+    ast.cmo
+environments.cmx : \
+    lisptype.cmx \
+    exceptions.cmx \
+    ast.cmx
+exceptions.cmo : \
+    lisptype.cmo \
+    ast.cmo
+exceptions.cmx : \
+    lisptype.cmx \
+    ast.cmx
 lexer.cmo : \
     parser.cmi
 lexer.cmx : \
     parser.cmx
+lisptype.cmo :
+lisptype.cmx :
 main.cmo : \
     preparetyper.cmo \
     parser.cmi \
@@ -14,39 +31,28 @@ main.cmx : \
     parser.cmx \
     lexer.cmx
 parser.cmo : \
-    ast.cmi \
+    ast.cmo \
     parser.cmi
 parser.cmx : \
-    ast.cmi \
+    ast.cmx \
     parser.cmi
 parser.cmi : \
-    ast.cmi
+    ast.cmo
 preparetyper.cmo : \
-    utils.cmo \
-    ast.cmi
+    wrapast.cmi \
+    lisptype.cmo \
+    exceptions.cmo \
+    environments.cmo \
+    ast.cmo
 preparetyper.cmx : \
-    utils.cmx \
-    ast.cmi
-sexpprepare.cmo : \
-    utils.cmo \
-    ast.cmi
-sexpprepare.cmx : \
-    utils.cmx \
-    ast.cmi
-temp_testing.cmo : \
-    main.cmo
-temp_testing.cmx : \
-    main.cmx
-typechecker.cmo : \
-    utils.cmo \
-    ast.cmi
-typechecker.cmx : \
-    utils.cmx \
-    ast.cmi
-utils.cmo : \
-    ast.cmi
-utils.cmx : \
-    ast.cmi
+    wrapast.cmi \
+    lisptype.cmx \
+    exceptions.cmx \
+    environments.cmx \
+    ast.cmx
+wrapast.cmi : \
+    lisptype.cmo \
+    ast.cmo
 x86_64.cmo : \
     x86_64.cmi
 x86_64.cmx : \

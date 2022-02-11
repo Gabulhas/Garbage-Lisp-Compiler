@@ -1,25 +1,5 @@
-type number = Real of float | Integer of int
-
-type simpleexp =
-  | Sexp of simpleexp * simpleexp list
-  | Boolean of bool
-  | Symbol of string
-  | LString of string
-  | Number of number
-  | Unit
-
-type lisptype =
-  | TypeBoolean
-  | TypeSymbol
-  | TypeString
-  | TypeNumber
-  | TypeUnit
-  | TypeList  (**Args types, return type *)
-  | TypeLambda of lisptype list * lisptype
-  | TypeUndefined
-  | TypeFunCall
-  | ComplexType of lisptype list
-
+open Lisptype
+open Ast
 type wrapsexp =
   | DEFINE of wrapsexp * wrapsexp
   (*If in Lisp (or at least Garbage Lisp) acts as a function*)

@@ -1,4 +1,14 @@
-open Ast
+type lisptype =
+  | TypeBoolean
+  | TypeSymbol
+  | TypeString
+  | TypeNumber
+  | TypeUnit
+  | TypeList  (**Args types, return type *)
+  | TypeLambda of lisptype list * lisptype
+  | TypeUndefined
+  | TypeFunCall
+  | ComplexType of lisptype list
 
 let rec type_to_string = function
   | TypeBoolean -> "Boolean"
@@ -17,24 +27,3 @@ let rec type_to_string = function
   | TypeUndefined -> "Undefined"
   | ComplexType a ->
       "[" ^ (List.map type_to_string a |> String.concat ", ") ^ "]"
-
-let sexp_to_string s =
-  let rec aux d c =
-    match c with
-    | Sexp (a, b) ->
-        "("
-        ^ aux (d + 1) a
-        ^ (List.map (fun x -> aux (d + 1) x) b |> String.concat " ")
-        ^ ")"
-    | Boolean a -> if a then "#t" else "#f"
-    | Symbol a -> a
-    | LString a -> Printf.sprintf "\"%s\"" a
-    | Number a -> (
-        match a with
-        | Real a -> string_of_float a
-        | Integer a -> string_of_int a)
-    | Unit -> "()"
-  in
-
-  aux 0 s
-

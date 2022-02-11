@@ -1,5 +1,4 @@
-#CMO=lexer.cmo parser.cmo x86_64.cmo compile.cmo main.cmo
-CMO=lexer.cmo parser.cmo utils.cmo exceptions.cmo preparetyper.cmo main.cmo 
+CMO=lexer.cmo parser.cmo lisptype.cmo exceptions.cmo environments.cmo preparetyper.cmo main.cmo
 GENERATED=lexer.ml parser.ml parser.mli
 BIN=glc
 FLAGS=-dtypes
@@ -40,3 +39,4 @@ clean:
 
 include .depend
 parser.ml: ast.cmi
+preparetyper.ml: wrapast.cmi

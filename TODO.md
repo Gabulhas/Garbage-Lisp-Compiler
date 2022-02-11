@@ -1,4 +1,5 @@
 # To Fix 
+- Change project to Dune project
 - List should have a type
 - Add type for quotes
 - Fix optional arguments

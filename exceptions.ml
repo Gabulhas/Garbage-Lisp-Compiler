@@ -1,4 +1,5 @@
-open Utils
+open Lisptype
+open Ast
 
 exception ParameterMismatchNumber of string
 exception NotAList of string
@@ -11,11 +12,7 @@ exception InferError of string
 
 let here_text = function Some a -> "Here: " ^ sexp_to_string a | None -> ""
 
-(* TODO: merge raise_parametermismatchnumber and raise_parametermismatchnumber_atleast
-
-
-*)
-
+(* TODO: merge raise_parametermismatchnumber and raise_parametermismatchnumber_atleast*)
 let raise_parametermismatchnumber symbol expected got ?(where = None) =
   raise
     (ParameterMismatchNumber
@@ -72,3 +69,14 @@ let raise_infer_error a b ?where =
     (InferError
        (Printf.sprintf "Unable to infer different types: %s =/= %s. %s"
           (type_to_string a) (type_to_string b) (here_text where)))
+
+
+
+(*expect type*)
+let wrapperchecktype a b excptn =
+  if a = b then a else if b == TypeUndefined then a else excptn a b
+
+let expctype  ?where expect got  = wrapperchecktype  expect got (raise_unexpectedtype  ~where:where)
+let doesmatch ?where expect got  = wrapperchecktype expect got (raise_mismatchedtype ~where:where)
+
+

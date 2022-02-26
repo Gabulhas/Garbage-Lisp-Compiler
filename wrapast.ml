@@ -1,5 +1,7 @@
 open Lisptype
 open Ast
+open Environments
+
 type wrapsexp =
   | DEFINE of wrapsexp * wrapsexp
   (*If in Lisp (or at least Garbage Lisp) acts as a function*)
@@ -28,8 +30,8 @@ type wrapsexp =
   | AND of wrapsexp list
   | OR of wrapsexp list
   | NOT of wrapsexp
-  (*Return Type*)
-  | BEGIN of wrapsexp list * lisptype
+  (*Return Type and Variables in scope, since define function only affects begin expressions*)
+  | BEGIN of wrapsexp list * lisptype * variableEnv list
   | PRINT of wrapsexp list * lisptype list
   | INPUTNUMBER
   | INPUTSTRING

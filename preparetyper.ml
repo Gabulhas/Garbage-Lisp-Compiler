@@ -192,16 +192,16 @@ and funcall se s l : wrapsexp * ScopeEnv.t =
   | "not" ->(NOT(let (e, env) = cargs 1 |> List.hd in expctype TypeBoolean env.scopetype |> ignore; e), ScopeEnv.update_scopetype TypeBoolean se)
   | "begin" -> 
     (
-      let rec wrap_begin currentenv currentwrap last_type = 
+      let rec wrap_begin currentenv currentwrap wrapvenvs last_type = 
         function 
         | h::tl -> (
             let (e, v) = wrap currentenv h in
             let new_env = ScopeEnv.merge_venv (ScopeEnv.merge_toinfer currentenv v) v  in
-            wrap_begin new_env (e::currentwrap) v.scopetype tl)
-        | _ -> (currentwrap, last_type, currentenv)
+            wrap_begin new_env (e::currentwrap) (new_env.venv::wrapvenvs) v.scopetype tl)
+        | _ -> (currentwrap, last_type, currentenv, wrapvenvs)
       in
-      let (res, last_type, last_env) = wrap_begin se [] se.scopetype l in
-      (BEGIN(List.rev res, last_type), ScopeEnv.merge_toinfer se last_env |> ScopeEnv.update_scopetype last_type ) 
+      let (res, last_type, last_env, wrapenvs) = wrap_begin se [] [] se.scopetype l in
+      (BEGIN(List.rev res, last_type, List.rev wrapenvs), ScopeEnv.merge_toinfer se last_env |> ScopeEnv.update_scopetype last_type ) 
     )
 
   | "print" -> 
@@ -315,4 +315,6 @@ and getvalue_list se =
   | _          -> assert false
 
 let prepare program =
-  wrap ScopeEnv.empty program 
+    let (wrapped, _) = wrap ScopeEnv.empty program 
+    in 
+    wrapped

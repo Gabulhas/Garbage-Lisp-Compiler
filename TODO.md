@@ -4,6 +4,8 @@
 - Add type for quotes
 - Fix optional arguments
 
+# Maybe
+- remove "add" func
 
 # Functions to implement
 

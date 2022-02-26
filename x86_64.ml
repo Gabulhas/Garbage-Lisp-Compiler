@@ -276,6 +276,20 @@ let setae a = ins "setae %a" a ()
 let setb  a = ins "setb %a" a ()
 let setbe a = ins "setbe %a" a ()
 
+let cmovqe  a b = ins "cmovqe %a, %s"  a () b
+let cmovqne a b = ins "cmovqne %a, %s" a () b
+let cmovqs  a b = ins "cmovqs %a, %s"  a () b
+let cmovqns a b = ins "cmovqns %a, %s" a () b
+let cmovqg  a b = ins "cmovqg %a, %s"  a () b
+let cmovqge a b = ins "cmovqge %a, %s" a () b
+let cmovql  a b = ins "cmovql %a, %s"  a () b
+let cmovqle a b = ins "cmovqle %a, %s" a () b
+let cmovqa  a b = ins "cmovqa %a, %s"  a () b
+let cmovqae a b = ins "cmovqae %a, %s" a () b
+let cmovqb  a b = ins "cmovqb %a, %s"  a () b
+let cmovqbe a b = ins "cmovqbe %a, %s" a () b
+
+
 let label (s : label) = S (asprintf "%a:\n" mangle s)
 let globl (s: label) = S (asprintf "\t.globl\t%a\n" mangle s)
 

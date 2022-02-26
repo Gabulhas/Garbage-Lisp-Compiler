@@ -1,8 +1,15 @@
-#load "lexer.cmo";;
-#load "parser.cmo";;
-#load "utils.cmo"
+
+#load "lexer.cmo"
+#load "ast.cmo"
+#load "parser.cmo"
+#load "lisptype.cmo"
 #load "exceptions.cmo"
+#load "environments.cmo"
+#load "wrapast.cmo"
 #load "preparetyper.cmo"
+#load "x86_64.cmo"
+#load "codegeneration.cmo"
+#load "main.cmo"
 
 (*
 #load "typechecker.cmo";;
@@ -10,16 +17,4 @@
 #load "codegeneration.cmo";;
 #load "main.cmo";;*)
 
-let pipeline filename =
-  open_in filename
-  |> Lexing.from_channel
-  |> Parser.program Lexer.lex
-  |> Preparetyper.prepare
-;;
-
-let stepped_pipeline filename =
-    let file = open_in filename in
-    let lexed = Lexing.from_channel file in
-    try  (None ,Some (Parser.program Lexer.lex lexed))
-    with | _ -> (Some lexed, None)
-
+open Main;;

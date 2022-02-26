@@ -1,7 +1,17 @@
 ast.cmo :
 ast.cmx :
-codegeneration.cmo :
-codegeneration.cmx :
+codegeneration.cmo : \
+    x86_64.cmi \
+    wrapast.cmo \
+    preparetyper.cmo \
+    lisptype.cmo \
+    exceptions.cmo
+codegeneration.cmx : \
+    x86_64.cmx \
+    wrapast.cmx \
+    preparetyper.cmx \
+    lisptype.cmx \
+    exceptions.cmx
 environments.cmo : \
     lisptype.cmo \
     exceptions.cmo \
@@ -25,11 +35,13 @@ lisptype.cmx :
 main.cmo : \
     preparetyper.cmo \
     parser.cmi \
-    lexer.cmo
+    lexer.cmo \
+    codegeneration.cmo
 main.cmx : \
     preparetyper.cmx \
     parser.cmx \
-    lexer.cmx
+    lexer.cmx \
+    codegeneration.cmx
 parser.cmo : \
     ast.cmo \
     parser.cmi
@@ -39,20 +51,25 @@ parser.cmx : \
 parser.cmi : \
     ast.cmo
 preparetyper.cmo : \
-    wrapast.cmi \
+    wrapast.cmo \
     lisptype.cmo \
     exceptions.cmo \
     environments.cmo \
     ast.cmo
 preparetyper.cmx : \
-    wrapast.cmi \
+    wrapast.cmx \
     lisptype.cmx \
     exceptions.cmx \
     environments.cmx \
     ast.cmx
-wrapast.cmi : \
+wrapast.cmo : \
     lisptype.cmo \
+    environments.cmo \
     ast.cmo
+wrapast.cmx : \
+    lisptype.cmx \
+    environments.cmx \
+    ast.cmx
 x86_64.cmo : \
     x86_64.cmi
 x86_64.cmx : \

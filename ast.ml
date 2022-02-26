@@ -8,8 +8,6 @@ type simpleexp =
   | Number of number
   | Unit
 
-
-
 let sexp_to_string s =
   let rec aux d c =
     match c with
@@ -29,4 +27,3 @@ let sexp_to_string s =
   in
 
   aux 0 s
-

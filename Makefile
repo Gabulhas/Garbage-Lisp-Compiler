@@ -1,4 +1,4 @@
-CMO=lexer.cmo parser.cmo lisptype.cmo exceptions.cmo environments.cmo preparetyper.cmo main.cmo
+CMO=lexer.cmo ast.cmo parser.cmo lisptype.cmo exceptions.cmo environments.cmo wrapast.cmo preparetyper.cmo x86_64.cmo codegeneration.ml main.cmo
 GENERATED=lexer.ml parser.ml parser.mli
 BIN=glc
 FLAGS=-dtypes
@@ -7,6 +7,7 @@ FLAGS=-dtypes
 #	./$(BIN) ./tests/8_funcs.pas
 #	gcc -no-pie -g test.s -o a.out
 #	./a.out
+
 
 
 $(BIN):$(CMO)
@@ -38,5 +39,5 @@ clean:
 	ocamldep *.ml *.mli > .depend
 
 include .depend
-parser.ml: ast.cmi
-preparetyper.ml: wrapast.cmi
+parser.ml: ast.cmo
+preparetyper.ml: wrapast.cmo

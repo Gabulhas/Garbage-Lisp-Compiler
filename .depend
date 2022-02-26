@@ -5,13 +5,15 @@ codegeneration.cmo : \
     wrapast.cmo \
     preparetyper.cmo \
     lisptype.cmo \
-    exceptions.cmo
+    exceptions.cmo \
+    environments.cmo
 codegeneration.cmx : \
     x86_64.cmx \
     wrapast.cmx \
     preparetyper.cmx \
     lisptype.cmx \
-    exceptions.cmx
+    exceptions.cmx \
+    environments.cmx
 environments.cmo : \
     lisptype.cmo \
     exceptions.cmo \
@@ -33,11 +35,13 @@ lexer.cmx : \
 lisptype.cmo :
 lisptype.cmx :
 main.cmo : \
+    x86_64.cmi \
     preparetyper.cmo \
     parser.cmi \
     lexer.cmo \
     codegeneration.cmo
 main.cmx : \
+    x86_64.cmx \
     preparetyper.cmx \
     parser.cmx \
     lexer.cmx \

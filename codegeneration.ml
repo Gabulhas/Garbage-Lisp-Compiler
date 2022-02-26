@@ -4,6 +4,9 @@ open Wrapast
 open Format
 open Lisptype
 open X86_64
+open Environments
+
+exception Not_Implemented 
 
 let label_index = ref 0
 
@@ -14,11 +17,12 @@ let new_label_index () =
 (**
 Assuming that all expression return values are stored in RDX
 *)
-let rec compile_expr venv wp =
-  (** 
-    a + b -> binop a b (exp +)
-  *)
-  let binop_fold exprs binexp =
+
+let popn n = addq (imm n) (reg rsp)
+let pushn n = subq (imm n) (reg rsp)
+
+
+let rec binop_fold_generate venv exprs binexp =
     List.fold_left (fun init expr ->
         init ++ 
         pushq (reg rdi) ++
@@ -27,6 +31,34 @@ let rec compile_expr venv wp =
         binexp
 
     ) (exprs |> List.hd |> compile_expr venv) (List.tl exprs)
+
+and print_generate venv exprs types =
+    List.fold_left2 ( fun init expr exprtype ->
+        init ++
+        (match exprtype with
+          | TypeBoolean -> raise Not_Implemented
+          | TypeSymbol -> raise Not_Implemented
+          | TypeString -> raise Not_Implemented
+          | TypeNumber -> compile_expr venv expr ++ call "print_int"
+          | TypeUnit -> raise Not_Implemented
+          | TypeList   -> raise Not_Implemented
+          | TypeLambda (_,_)-> raise Not_Implemented
+          | TypeUndefined -> raise Not_Implemented
+          | TypeFunCall -> raise Not_Implemented
+          | ComplexType (_)-> raise Not_Implemented
+
+        )
+
+    ) nop exprs types
+
+
+
+and compile_expr venv wp =
+  (** 
+    a + b -> binop a b (exp +)
+  *)
+  let binop_fold exprs binexp =
+      binop_fold_generate venv exprs binexp
   in
 
   match wp with
@@ -43,7 +75,7 @@ let rec compile_expr venv wp =
   *)
   (*Binops always have at least 2 elements, so List.tl [] never throws exceptions*)
   | SUM explist -> binop_fold explist (addq (reg rsi) (reg rdi))
-  | SUB explist -> binop_fold explist (subq (reg rsi) (reg rdi))
+  | SUB explist -> binop_fold (List.rev explist) (subq (reg rsi) (reg rdi))
   | MUL explist -> binop_fold explist (imulq (reg rsi) (reg rdi))
   | DIV explist -> binop_fold explist (movq (imm 0) (reg rdx)
                                     ++ movq (reg rsi) (reg rax)
@@ -112,11 +144,15 @@ let rec compile_expr venv wp =
       ++ cmpq (reg rdi) (reg rsi)
       ++ setne (reg dil)
       ++ movzbq (reg dil) rdi
-
+  | BEGIN (exps, return_type, venvs)  ->  
+          List.fold_left2 (fun init expr this_venv ->
+            init ++
+            compile_expr this_venv expr
+          ) nop exps venvs 
+  | PRINT (exps, exps_types)->
+    print_generate venv exps exps_types       
   (*
   | INTPART
-  | BEGIN
-  | PRINT
   | INPUTNUMBER
   | INPUTSTRING
   | TOSYMBOL
@@ -133,10 +169,54 @@ let rec compile_expr venv wp =
   | BOOLEAN
   | SYMBOL
   | STRING
-  | NUMBER
+  *)
+  | NUMBER a -> 
+          (match a with  
+          | Real a -> raise (Invalid_argument "Not Implemented yet") 
+          | Integer a -> movq (imm a) (reg rdi))
+  | BOOLEAN b -> movq (imm (if b then 1 else 0)) (reg rdi)
+
+  (*
   | UNIT
   *)
-  | _ -> nop ++ nop
+  | _ -> raise Not_Implemented 
 
-let generate wrapast =
-    wrapast
+let helper_routines =
+  let h_print_int =
+    label "print_int"
+    ++ movq (reg rdi) (reg rsi)
+    ++ movq (ilab ".Sprint_int") (reg rdi)
+    ++ movq (imm 0) (reg rax)
+    ++ call "printf" ++ ret
+  in
+  let h_scan_int =
+    label "scan_int" ++ pushn 8
+    ++ xorl (reg eax) (reg eax)
+    ++ movq (ilab ".SScan_int") (reg rdi)
+    ++ movq (reg rsp) (reg rsi)
+    ++ call "scanf" ++ popq rdi ++ ret
+  in
+
+  nop ++ h_print_int ++ h_scan_int
+
+let helper_data =
+  label ".Sprint_int" ++ string "%d\n" ++ label ".SScan_int" ++ string "%d"
+
+let generation_pipeline program =
+  let generated_code = compile_expr VariableMap.empty program in
+  let p =
+    {
+      text =
+        globl "main" 
+        ++ movq (reg rsp) (reg rbp)
+        ++ movq (imm 0) (reg rax)
+        (* exit *)
+        ++ helper_routines 
+        ++ label "main"
+        ++ generated_code
+        ++ ret;
+      data = helper_data;
+    }
+  in
+  p
+

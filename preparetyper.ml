@@ -47,7 +47,7 @@ and funcall se s l : wrapsexp * ScopeEnv.t =
     let se = (match new_se with | Some a -> a | _ -> se) in
     if at_least && n < v then
       (raise_parametermismatchnumber_atleast s v n ~where:(Some(real_func)))
-    else if n <> v then 
+    else if not at_least && n <> v then 
       (raise_parametermismatchnumber s v n ~where:(Some(real_func)))
     else let (_, result) = List.fold_left_map (fun this_se s -> 
           let (e, v) = wrap this_se s ~can_be_symbol:can_be_symbol in

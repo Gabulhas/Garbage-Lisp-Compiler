@@ -32,6 +32,30 @@ let rec binop_fold_generate venv exprs binexp =
 
     ) (exprs |> List.hd |> compile_expr venv) (List.tl exprs)
 
+and relational_fold_generate venv exprs jumpexp =
+    
+      let i = new_label_index () in
+      let end_lbl = sprintf "CMP_END_%d" i in
+      let false_result = end_lbl ^ "FALSE_RESULT" in
+      (List.fold_left (fun init expr ->
+          init
+          ++ movq (reg rdi) (reg rsi)
+          ++ compile_expr venv expr 
+          ++ cmpq (reg rdi) (reg rsi)
+          ++ jumpexp false_result
+          
+
+      ) (exprs |> List.hd |> compile_expr venv) (List.tl exprs)
+      ) 
+      ++ movq (imm 1) (reg rdi)
+      ++ jmp end_lbl
+      ++ label false_result
+      ++ movq (imm 0) (reg rdi)
+      ++ label end_lbl
+      ++ comment ("END-----------------"^ end_lbl)
+
+
+
 and print_generate venv exprs types =
     List.fold_left2 ( fun init expr exprtype ->
         init ++
@@ -53,26 +77,45 @@ and print_generate venv exprs types =
 
 
 
-and compile_expr venv wp =
+and compile_expr (venv:variableEnv) wp =
   (** 
     a + b -> binop a b (exp +)
   *)
   let binop_fold exprs binexp =
       binop_fold_generate venv exprs binexp
   in
+  let relational_fold exprs cmpexp =
+    relational_fold_generate venv exprs cmpexp
+  in
 
   match wp with
   (*
   | DEFINE(vardef_exp, valres_exp) -> 
-  | IF
   | LAMBDA
   | MAP
   | ALL
   | QUOTE
   | EVAL
   | SET
-  | LOAD
+  | LOAD a -> reuse generation_pipeline :)
   *)
+  | IF (cond, then_part, else_part, return_type)-> 
+      let i = new_label_index () in
+      let compiled_then = compile_expr venv then_part in
+      let compiled_else = compile_expr venv else_part in
+      let if_lbl = sprintf "IF_%d" i in
+      let if_end = if_lbl ^ "_END" in
+      let if_else = if_lbl ^ "_else" in
+      compile_expr venv cond
+      ++ movq (imm 1) (reg rsi)
+      ++ cmpq (reg rdi) (reg rsi)
+      ++ jne if_else 
+      ++ compiled_then 
+      ++ jmp if_end 
+      ++ label if_else
+      ++ compiled_else
+      ++ label if_end
+
   (*Binops always have at least 2 elements, so List.tl [] never throws exceptions*)
   | SUM explist -> binop_fold explist (addq (reg rsi) (reg rdi))
   | SUB explist -> binop_fold (List.rev explist) (subq (reg rsi) (reg rdi))
@@ -87,11 +130,13 @@ and compile_expr venv wp =
                                     ++ movq (reg rdi) (reg rcx)
                                     ++ idivq (reg rcx)
                                     ++ movq (reg rdx) (reg rdi))
-  | GT explist -> binop_fold explist (cmpq (reg rdi) (reg rsi) ++ setg (reg dil) ++ movzbq (reg dil) rdi)
-  | LT explist -> binop_fold explist (cmpq (reg rdi) (reg rsi) ++ setl (reg dil) ++ movzbq (reg dil) rdi)
-  | GE explist -> binop_fold explist (cmpq (reg rdi) (reg rsi) ++ setge (reg dil) ++ movzbq (reg dil) rdi)
-  | LE explist -> binop_fold explist (cmpq (reg rdi) (reg rsi) ++ setle (reg dil) ++ movzbq (reg dil) rdi)
-  | EQ explist -> binop_fold explist (cmpq (reg rdi) (reg rsi) ++ sete (reg dil) ++ movzbq (reg dil) rdi)
+
+  | GT explist -> relational_fold explist jle
+  | LT explist -> relational_fold explist jge
+  | GE explist -> relational_fold explist jl
+  | LE explist -> relational_fold explist jg
+  | EQ explist -> relational_fold explist jne
+
   | MAX explist ->binop_fold explist (cmpq (reg rsi) (reg rdi) ++ cmovqg (reg rsi) rdi)
   | MIN explist ->binop_fold explist (cmpq (reg rsi) (reg rdi) ++ cmovql (reg rsi) rdi)
   | AND explist -> 

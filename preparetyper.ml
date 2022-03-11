@@ -3,6 +3,7 @@ open Exceptions
 open Environments
 open Lisptype
 open Wrapast
+open Utils
 
 
 let rec wrap ?(can_be_symbol=false) se exp: wrapsexp * ScopeEnv.t=
@@ -141,10 +142,11 @@ and funcall se s l : wrapsexp * ScopeEnv.t =
     );
     (MAP (lambda_exp, list_exp), ScopeEnv.update_scopetype TypeList se)
   | "all" ->
-    let c = cargs 1 ~at_least:true in
-    let exps = List.map (fun (e, v) -> e) c in
-    let (_, last_scope) = c |> List.rev |>  List.hd in
-    (ALL(exps), ScopeEnv.update_scopetype TypeUnit last_scope)
+        let wexp, se = funcall se "begin" l in
+        (match wexp with
+        | BEGIN (exps, ltype, envs) -> (ALL(exps, envs), se)
+        | _ -> assert false
+        ) 
 
   | "quote" -> (
       let (exp, env) = cargs 1 |> List.hd in

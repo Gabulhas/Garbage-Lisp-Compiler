@@ -56,16 +56,20 @@ parser.cmi : \
     ast.cmo
 preparetyper.cmo : \
     wrapast.cmo \
+    utils.cmo \
     lisptype.cmo \
     exceptions.cmo \
     environments.cmo \
     ast.cmo
 preparetyper.cmx : \
     wrapast.cmx \
+    utils.cmx \
     lisptype.cmx \
     exceptions.cmx \
     environments.cmx \
     ast.cmx
+utils.cmo :
+utils.cmx :
 wrapast.cmo : \
     lisptype.cmo \
     environments.cmo \

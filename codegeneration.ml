@@ -39,8 +39,9 @@ and relational_fold_generate venv exprs jumpexp =
       let false_result = end_lbl ^ "FALSE_RESULT" in
       (List.fold_left (fun init expr ->
           init
-          ++ movq (reg rdi) (reg rsi)
+          ++ pushq (reg rdi)
           ++ compile_expr venv expr 
+          ++ popq rsi
           ++ cmpq (reg rdi) (reg rsi)
           ++ jumpexp false_result
           
@@ -93,7 +94,6 @@ and compile_expr (venv:variableEnv) wp =
   | DEFINE(vardef_exp, valres_exp) -> 
   | LAMBDA
   | MAP
-  | ALL
   | QUOTE
   | EVAL
   | SET
@@ -149,7 +149,7 @@ and compile_expr (venv:variableEnv) wp =
           in case the results are different to 1 (cmpq... jump not equal) we jump to false_result, which
           sets RDI (the return register) to 0 (false)
 
-          if we reach the end of the expression list, the last expression was equal to 1, so RDI has the value 1, so we just
+         if we reach the end of the expression list, the last expression was equal to 1, so RDI has the value 1, so we just
           don't set RDI to 0
       *)
       (List.fold_left (fun init x -> 
@@ -189,6 +189,9 @@ and compile_expr (venv:variableEnv) wp =
       ++ cmpq (reg rdi) (reg rsi)
       ++ setne (reg dil)
       ++ movzbq (reg dil) rdi
+  | ALL (exps, venvs) -> 
+          compile_expr venv (BEGIN(exps, TypeUnit, venvs))
+          ++ (movq (imm 0) (reg rdi))
   | BEGIN (exps, return_type, venvs)  ->  
           List.fold_left2 (fun init expr this_venv ->
             init ++
@@ -196,9 +199,15 @@ and compile_expr (venv:variableEnv) wp =
           ) nop exps venvs 
   | PRINT (exps, exps_types)->
     print_generate venv exps exps_types       
+
+  | INPUTNUMBER -> 
+           comment "----------INPUTNUMBER----------"
+        ++ call "scan_int"
+        ++ movq (reg rsi) (reg rdi)
+        ++ comment "-------------------------------"
+
   (*
   | INTPART
-  | INPUTNUMBER
   | INPUTSTRING
   | TOSYMBOL
   | LISTCREATE
@@ -211,13 +220,12 @@ and compile_expr (venv:variableEnv) wp =
   | TOSTRING
   | FUNCTIONCALL
   | LIST
-  | BOOLEAN
   | SYMBOL
   | STRING
   *)
   | NUMBER a -> 
           (match a with  
-          | Real a -> raise (Invalid_argument "Not Implemented yet") 
+          | Real a -> raise Not_Implemented
           | Integer a -> movq (imm a) (reg rdi))
   | BOOLEAN b -> movq (imm (if b then 1 else 0)) (reg rdi)
 
@@ -253,13 +261,18 @@ let generation_pipeline program =
     {
       text =
         globl "main" 
-        ++ movq (reg rsp) (reg rbp)
-        ++ movq (imm 0) (reg rax)
         (* exit *)
         ++ helper_routines 
         ++ label "main"
+        ++ comment "-------------SETUP-------------"
+        ++ movq (reg rsp) (reg rbp)
+        ++ movq (imm 0) (reg rax)
+        ++ comment "-------------------------------"
         ++ generated_code
-        ++ ret;
+        ++ comment "-------------EXIT--------------"
+        ++ movq (imm 0) (reg rax)
+        ++ ret
+        ++ comment "-------------------------------";
       data = helper_data;
     }
   in

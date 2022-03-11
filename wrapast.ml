@@ -9,7 +9,7 @@ type wrapsexp =
   (*Parameters Type and Return Type*)
   | LAMBDA of string list * wrapsexp * lisptype list * lisptype
   | MAP of wrapsexp * wrapsexp
-  | ALL of wrapsexp list
+  | ALL of wrapsexp list * variableEnv list
   | QUOTE of wrapsexp
   | EVAL of wrapsexp
   | SET of wrapsexp * wrapsexp

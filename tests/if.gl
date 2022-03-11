@@ -1,4 +1,16 @@
-(if (>= 5 5 3)
-    (print 4)
+(if (> (+ 4 5) (- 9 0))
     (print 0)
+    (print 5)
+  )
+
+
+(if (= 5 5 5)
+    (if (< 4 1)
+        (print 1)
+        (print 2)
+    )
+    (if (< 4 1)
+        (print 3)
+        (print 4)
+    )
 )

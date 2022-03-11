@@ -1,4 +1,9 @@
+
 # To Fix 
+- fix scanf
+
+
+
 - Change project to Dune project
 - List should have a type
 - Add type for quotes
@@ -21,21 +26,21 @@
 - [ ] `load`
 
 ## Arithmetic
-- [ ] `*`
-- [ ] `+`
-- [ ] `-`
-- [ ] `/`
+- [x] `*`
+- [x] `+`
+- [x] `-`
+- [x] `/`
 - [ ] `%`
 - [ ] `max`
 - [ ] `min`
 - [ ] `intPart`
 
 ## Logic
-- [ ] `>`
-- [ ] `<`
-- [ ] `>=`
-- [ ] `<=`
-- [ ] `=`
+- [x] `>`
+- [x] `<`
+- [x] `>=`
+- [x] `<=`
+- [x] `=`
 
 ## Boolean Logic
 - [ ] `and`

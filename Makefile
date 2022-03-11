@@ -1,4 +1,4 @@
-CMO=lexer.cmo ast.cmo parser.cmo lisptype.cmo exceptions.cmo environments.cmo wrapast.cmo preparetyper.cmo x86_64.cmo codegeneration.ml main.cmo
+CMO=lexer.cmo ast.cmo parser.cmo lisptype.cmo utils.cmo exceptions.cmo environments.cmo wrapast.cmo preparetyper.cmo x86_64.cmo codegeneration.ml main.cmo
 GENERATED=lexer.ml parser.ml parser.mli
 BIN=glc
 FLAGS=-dtypes

@@ -1,0 +1,8 @@
+(if (> 4 (inputNumber))
+  (print (+ 4 5 (inputNumber)))
+  (print (* 2 (inputNumber)))
+  )
+
+(print 4)
+(print (+ 1 (inputNumber) (inputNumber)))
+(print (* 1 (inputNumber) 4))

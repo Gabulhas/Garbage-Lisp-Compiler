@@ -3,6 +3,7 @@
 #load "ast.cmo"
 #load "parser.cmo"
 #load "lisptype.cmo"
+#load "utils.cmo"
 #load "exceptions.cmo"
 #load "environments.cmo"
 #load "wrapast.cmo"

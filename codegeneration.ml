@@ -137,8 +137,8 @@ and compile_expr (venv:variableEnv) wp =
   | LE explist -> relational_fold explist jg
   | EQ explist -> relational_fold explist jne
 
-  | MAX explist ->binop_fold explist (cmpq (reg rsi) (reg rdi) ++ cmovqg (reg rsi) rdi)
-  | MIN explist ->binop_fold explist (cmpq (reg rsi) (reg rdi) ++ cmovql (reg rsi) rdi)
+  | MAX explist ->binop_fold explist (cmpq (reg rsi) (reg rdi) ++ cmovg (reg rsi) rdi)
+  | MIN explist ->binop_fold explist (cmpq (reg rsi) (reg rdi) ++ cmovl (reg rsi) rdi)
   | AND explist -> 
       let i = new_label_index () in
       let end_lbl = sprintf "AND_END_%d" i in

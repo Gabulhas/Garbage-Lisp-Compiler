@@ -322,18 +322,18 @@ val setb : [`B] operand -> text  (* <  non signé *)
 val setbe: [`B] operand -> text  (* <= non signé *)
   (** positionne l'octet opérande à 1 ou 0 selon que le test est vrai ou non *)
 
-val cmovqe : [`Q] operand -> [`Q] register -> text
-val cmovqne: [`Q] operand -> [`Q] register -> text 
-val cmovqs : [`Q] operand -> [`Q] register -> text 
-val cmovqns: [`Q] operand -> [`Q] register -> text 
-val cmovqg : [`Q] operand -> [`Q] register -> text 
-val cmovqge: [`Q] operand -> [`Q] register -> text 
-val cmovql : [`Q] operand -> [`Q] register -> text 
-val cmovqle: [`Q] operand -> [`Q] register -> text 
-val cmovqa : [`Q] operand -> [`Q] register -> text 
-val cmovqae: [`Q] operand -> [`Q] register -> text 
-val cmovqb : [`Q] operand -> [`Q] register -> text 
-val cmovqbe: [`Q] operand -> [`Q] register -> text 
+val cmove : [`Q] operand -> [`Q] register -> text
+val cmovne: [`Q] operand -> [`Q] register -> text 
+val cmovs : [`Q] operand -> [`Q] register -> text 
+val cmovns: [`Q] operand -> [`Q] register -> text 
+val cmovg : [`Q] operand -> [`Q] register -> text 
+val cmovge: [`Q] operand -> [`Q] register -> text 
+val cmovl : [`Q] operand -> [`Q] register -> text 
+val cmovle: [`Q] operand -> [`Q] register -> text 
+val cmova : [`Q] operand -> [`Q] register -> text 
+val cmovae: [`Q] operand -> [`Q] register -> text 
+val cmovb : [`Q] operand -> [`Q] register -> text 
+val cmovbe: [`Q] operand -> [`Q] register -> text 
 
 
 (** {2 Manipulation de la pile} *)

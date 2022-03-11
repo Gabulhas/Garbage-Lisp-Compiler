@@ -30,7 +30,7 @@
 - [x] `+`
 - [x] `-`
 - [x] `/`
-- [ ] `%`
+- [x] `%`
 - [ ] `max`
 - [ ] `min`
 - [ ] `intPart`
@@ -52,7 +52,7 @@
 - [ ] `print`
 - [ ] `printf`
 - [ ] `printd`
-- [ ] `inputNumber`
+- [x] `inputNumber`
 - [ ] `inputString`
 - [ ] `readLine`
 - [ ] `toSymbol`

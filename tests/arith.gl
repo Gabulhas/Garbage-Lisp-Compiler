@@ -15,3 +15,5 @@
 ))
 
 (print (* 2 9))
+(print (max 4 5 10 11))
+(print (min 4 5 10 11))

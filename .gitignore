@@ -34,3 +34,7 @@ parser.mli
 parser.ml
 parser.conflicts
 lexer.ml
+out/bin  
+out/generated_binaries  
+out/machinecode  
+out/runtime

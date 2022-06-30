@@ -9,8 +9,8 @@ type simpleexp =
   | Unit
 
 let sexp_to_string s =
-  let rec aux d c =
-    match c with
+    let rec aux d c =
+        match c with
     | Sexp (a, b) ->
         "("
         ^ aux (d + 1) a
@@ -24,6 +24,6 @@ let sexp_to_string s =
         | Real a -> string_of_float a
         | Integer a -> string_of_int a)
     | Unit -> "()"
-  in
+    in
 
   aux 0 s

@@ -2,7 +2,6 @@ open Ast
 open Exceptions
 open Lisptype
 
-(**Maps Variable Name to Type*)
 module VariableMap = Map.Make (struct
     type t = string
 

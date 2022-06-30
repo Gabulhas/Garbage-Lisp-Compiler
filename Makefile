@@ -9,7 +9,6 @@ FLAGS=-dtypes
 #	./a.out
 
 
-
 $(BIN):$(CMO)
 	ocamlc $(FLAGS) -o $(BIN) $(CMO)
 

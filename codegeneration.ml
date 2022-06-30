@@ -90,7 +90,11 @@ and compile_expr (venv:variableEnv) wp =
   in
 
   match wp with
+
   (*
+  (*
+    Use the last to generate the index of a variable
+   *)
   | DEFINE(vardef_exp, valres_exp) -> 
   | LAMBDA
   | MAP
@@ -205,7 +209,6 @@ and compile_expr (venv:variableEnv) wp =
         ++ call "scan_int"
         ++ movq (reg rsi) (reg rdi)
         ++ comment "-------------------------------"
-
   (*
   | INTPART
   | INPUTSTRING

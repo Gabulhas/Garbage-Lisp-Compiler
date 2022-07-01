@@ -28,6 +28,8 @@ exceptions.cmo : \
 exceptions.cmx : \
     lisptype.cmx \
     ast.cmx
+gcccalls.cmo :
+gcccalls.cmx :
 lexer.cmo : \
     parser.cmi
 lexer.cmx : \
@@ -39,12 +41,14 @@ main.cmo : \
     preparetyper.cmo \
     parser.cmi \
     lexer.cmo \
+    gcccalls.cmo \
     codegeneration.cmo
 main.cmx : \
     x86_64.cmx \
     preparetyper.cmx \
     parser.cmx \
     lexer.cmx \
+    gcccalls.cmx \
     codegeneration.cmx
 parser.cmo : \
     ast.cmo \

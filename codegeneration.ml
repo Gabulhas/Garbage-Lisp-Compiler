@@ -240,36 +240,38 @@ and compile_expr (venv:variableEnv) wp =
 let helper_routines =
   let h_print_int =
     label "print_int"
-    ++ movq (reg rdi) (reg rsi)
-    ++ movq (ilab ".Sprint_int") (reg rdi)
-    ++ movq (imm 0) (reg rax)
-    ++ call "printf" ++ ret
+    ++ pushq (reg rsi)
+    ++ call "printInt" 
+    ++ popn 8
+    ++ ret
   in
   let h_scan_int =
-    label "scan_int" ++ pushn 8
-    ++ xorl (reg eax) (reg eax)
-    ++ movq (ilab ".SScan_int") (reg rdi)
-    ++ movq (reg rsp) (reg rsi)
-    ++ call "scanf" ++ popq rdi ++ ret
+    label "scan_int" 
+    ++ pushn 8
+    ++ call "inputInt" 
+    ++ movq (reg rax) (reg rsi) 
+    ++ popn 8
+    ++ ret
   in
 
   nop ++ h_print_int ++ h_scan_int
 
 let helper_data =
-  label ".Sprint_int" ++ string "%d\n" ++ label ".SScan_int" ++ string "%d"
+    label ".Sprint_int" ++ string "%d\n" ++ label ".SScan_int" ++ string "%d"
 
 let generation_pipeline program =
-  let generated_code = compile_expr VariableMap.empty program in
-  let p =
-    {
-      text =
-        globl "main" 
+    let generated_code = compile_expr VariableMap.empty program in
+    let p =
+        {
+            text =
+                globl "main" 
         (* exit *)
         ++ helper_routines 
         ++ label "main"
         ++ comment "-------------SETUP-------------"
         ++ movq (reg rsp) (reg rbp)
         ++ movq (imm 0) (reg rax)
+        ++ movq (imm 0) (reg rdi)
         ++ comment "-------------------------------"
         ++ generated_code
         ++ comment "-------------EXIT--------------"
@@ -277,7 +279,7 @@ let generation_pipeline program =
         ++ ret
         ++ comment "-------------------------------";
       data = helper_data;
-    }
-  in
+        }
+    in
   p
 

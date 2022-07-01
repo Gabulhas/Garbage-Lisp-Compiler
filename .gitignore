@@ -30,6 +30,7 @@ _opam/
 
 parser.automaton
 
+glc
 parser.mli
 parser.ml
 parser.conflicts
